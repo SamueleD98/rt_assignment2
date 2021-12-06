@@ -1,52 +1,79 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "std_srvs/Empty.h"
-#include "second_assignment/Velocity.h"
+#include "rt_assignment2/Velocity.h"
 
-ros::ServiceClient change_speed;
 
 int main (int argc, char **argv)
 {
-	// Initialize the node, setup the NodeHandle for handling the communication with the ROS //system  
+	// Initialize the node, setup the NodeHandle for handling the communication with the ROS system  
 	ros::init(argc, argv, "bot_gui");  
 	ros::NodeHandle nh;
 		
+	// Setup the service client for the resetting of the robot position	
 	ros::ServiceClient reset =  nh.serviceClient<std_srvs::Empty>("/reset_positions");
+	// Declaring the argument of the reset call. The type is given by "rosservice info /reset_positions"
 	std_srvs::Empty rst;		
 	
-	change_speed = nh.serviceClient<second_assignment::Velocity>("/velocity");
+	// Setup the service client for the increase and decrease of the robot speed
+	ros::ServiceClient change_speed = nh.serviceClient<rt_assignment2::Velocity>("/velocity");
+	// Declaring the argument of the change speed call
+	rt_assignment2::Velocity vel;
 	
-	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed.\n");
+	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	'x' to kill the gui node.\n");
 	
-	second_assignment::Velocity vel;	
+	//Declaring the input string
+	char inputString1;
 	
+	// The node needs to be ready to receive input until the node is running	
 	while (ros::ok()) 
 	{	
-	
-		std::string inputString1;
-		std::getline(std::cin, inputString1);
 		
-		int cmd=0;
-
-		if (inputString1 == "r") 
-		{
-			reset.call(rst);
-			ROS_INFO("Position resetted!");
-		}else{
-			if (inputString1 == "s") cmd = -1;
-			if (inputString1 == "w") cmd = 1;		
+		//Writing the input string
+		std::cin >> inputString1;		
 		
-			vel.request.command = cmd;
-			
-			change_speed.call(vel);
-			
-			if(vel.response.resp){
-				ROS_INFO("Speed changed!");
-			}else{
-				ROS_INFO("Error, please type again.");
-			}
+		switch (inputString1) {
+			case 'r':
+				// Calling the service
+				reset.call(rst);
+				ROS_INFO("Position resetted!");			
+				break;
+				
+			case 'w':
+				// Setting the command to increase the speed
+				vel.request.command = 1;
+				// Calling the service
+				change_speed.call(vel);
+				// Analyzing the response
+				if(vel.response.resp){
+					ROS_INFO("Speed increased!");
+				}else{
+					ROS_INFO("Warning, speed too high.");
+				}
+				break;
+				
+			case 's':
+				// Setting the command to increase the speed
+				vel.request.command = -1;
+				// Calling the service
+				change_speed.call(vel);
+				// Analyzing the response
+				if(vel.response.resp){
+					ROS_INFO("Speed decreased!");
+				}else{
+					ROS_INFO("Error, the bot is not moving.");
+				}
+				break;
+				
+			case 'x':
+				return 0;
+				
+			default:
+				ROS_INFO("Wrong character, please type again.");		
 		}
-
+		
+		// cin should ignore every other char until it finds a new line
+		std::cin.ignore(1000,'\n');
 	}
 	
 	ros::spin();

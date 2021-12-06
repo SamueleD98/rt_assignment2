@@ -2,7 +2,7 @@
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 #include <math.h>   
-#include "second_assignment/Velocity.h"
+#include "rt_assignment2/Velocity.h"
 
 ros::Publisher pub;
 
@@ -56,14 +56,15 @@ void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 		pub.publish(my_vel);
         }
   
-bool velocityCallback (second_assignment::Velocity::Request &req, second_assignment::Velocity::Response &res){
+bool velocityCallback (rt_assignment2::Velocity::Request &req, rt_assignment2::Velocity::Response &res){
 
 	geometry_msgs::Twist my_vel;	
 	
 	res.resp = true;	  
 	
 	if (req.command == req.acc) {
-		vel_linear_x = vel_linear_x + 0.5;		
+		vel_linear_x = vel_linear_x + 0.5;
+		if (vel_linear_x >= 2.0) res.resp = false;		
 	}else if (req.command == req.dec && vel_linear_x >= 0.5) {
 		vel_linear_x = vel_linear_x - 0.5;
 	}else{
@@ -78,7 +79,7 @@ bool velocityCallback (second_assignment::Velocity::Request &req, second_assignm
 
 int main (int argc, char **argv)
 {
-	ros::init(argc, argv, "bot_subscriber");  
+	ros::init(argc, argv, "bot_controller");  
 	ros::NodeHandle nh;
 	
 	pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);				//To change the velocity
