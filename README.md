@@ -3,12 +3,15 @@ This is a simple robot simulator that implements two ROS nodes to control a robo
 The gui node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. The robot will change its direction autonomously, avoiding to collide with the wall while the speed is low enough.  
 
 ## Running
-The repository has a launch file that will run, in order:
--the ros master
--the world representation
--the robot controller node
--the robot gui node
-
+The repository has a launch file that will run, in order:  
+-the ros master  
+-the world representation  
+-the robot controller node  
+-the robot gui node  
+  
+rosrun stage_ros stageros $(rospack find second_assignment)/world/my_world.world  
+  
+  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!CODICE LANCIO!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ## Robot behaviour 
