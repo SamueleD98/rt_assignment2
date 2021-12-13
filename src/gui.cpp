@@ -20,7 +20,7 @@ int main (int argc, char **argv)
 	// Declaring the argument of the change speed call
 	rt_assignment2::Velocity vel;
 	
-	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	'x' to kill the gui node.\n");
+	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	't' to toggle the helper,\n	'x' to kill the gui node.\n");
 	
 	//Declaring the input string
 	char inputString1;
@@ -48,7 +48,7 @@ int main (int argc, char **argv)
 				if(vel.response.resp){
 					ROS_INFO("Speed increased!");
 				}else{
-					ROS_INFO("Warning, speed too high.");
+					ROS_INFO("Speed increased!\n	Warning, speed too high.");
 				}
 				break;
 				
@@ -69,9 +69,9 @@ int main (int argc, char **argv)
 				vel.request.command = 0;
 				change_speed.call(vel);
 				if(vel.response.resp){
-					ROS_INFO("Helper deactivated!");
+					ROS_INFO("Helper activated!");
 				}else{
-					ROS_INFO("Helper activated");
+					ROS_INFO("Helper deactivated");
 				}
 				break;
 				

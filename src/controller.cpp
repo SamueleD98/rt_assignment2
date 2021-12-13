@@ -14,7 +14,7 @@ void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 		geometry_msgs::Twist my_vel;
 				
 		//Dividing the ostacles in sectors
-		int number_of_sectors = 5;
+		int number_of_sectors = 9;
 		
 		float sector_angle = M_PI/number_of_sectors;	//angle of one of the five sectors
 		int n_of_values_per_sector = round( sector_angle / msg->angle_increment );
@@ -30,30 +30,54 @@ void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 					min[j] = msg->ranges[i];
 			      	}
 			}
-		}				
-		
-		//Deciding where to turn
-		float diff1 = min[1] - min[3];
-		float diff2 = min[0] - min[4];
-		if (min[2] < 0.8) 	//emergenza
-		{		
-			if (std::abs(diff1) > std::abs(diff2)) 
-			{			
-				my_vel.angular.z = - diff1 / std::abs(diff1) * 30;		
-			}else{
-				my_vel.angular.z = - diff2 / std::abs(diff2) * 100;				
-			}					
-		
-		}else{ 			//addrizzo solamente
-			my_vel.angular.z = - diff1 / std::abs(diff1) * vel_linear_x * 100;
-			//ROS_INFO("Going..");		
-		}		
-		if (min[2] < 0.2) 	//addio
-		{
-			ROS_INFO("Collision!");
 		}	
 		
-		my_vel.linear.x = vel_linear_x;	
+		float min_r[5];
+		min_r[2] = min[4];
+		if (min[3]>min[2]) min_r[1] = min[2];
+		else {min_r[1] = min[3];}
+		
+		if (min[1]>min[0]) min_r[0] = min[0];
+		else {min_r[0] = min[1];}
+		
+		if (min[5]>min[6]) min_r[3] = min[6];
+		else {min_r[3] = min[5];}
+		
+		if (min[7]>min[8]) min_r[4] = min[8];
+		else {min_r[4] = min[7];}
+		
+		//Deciding where to turn
+		float diff1 = min_r[1] - min_r[3];
+		float diff2 = min_r[0] - min_r[4];
+		
+		//if (helper_status && min[2] < 2.0 && vel_linear_x >= 2.0) {
+		if (helper_status && min_r[2] < 2.0 && vel_linear_x >= 2.0) {
+			
+			my_vel.linear.x = 1.5;
+			//ROS_INFO("WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n");
+		
+		
+		} else {
+		
+			my_vel.linear.x = vel_linear_x;	
+		}
+		
+		
+		
+		my_vel.angular.z = - diff1 / std::abs(diff1) * 1000;
+		
+				
+		//	if (std::abs(diff1) > std::abs(diff2)) 
+		//	{			
+		//		my_vel.angular.z = - diff1 / std::abs(diff1) * 30;		
+		//	}else{
+		//		my_vel.angular.z = - diff2 / std::abs(diff2) * 100;				
+		//	}					
+		
+		ROS_INFO("Speed, linear and angular: [%.1f, %.1f]",
+		my_vel.linear.x, my_vel.angular.z); 
+		
+		
 		pub.publish(my_vel);
         }
   
@@ -71,13 +95,11 @@ bool velocityCallback (rt_assignment2::Velocity::Request &req, rt_assignment2::V
 	}else if (req.toggle_helper == 1){
 		//toggle
 		helper_status = !helper_status;
-		if (helper_status) res.resp = false;
+		if (!helper_status) res.resp = false;
 	}else {
 		res.resp = false;
 	}
 	
-	
-	// se helper attivo allora devo controllare la velocità in base agli ostacoli
 	my_vel.linear.x = vel_linear_x;
 	pub.publish(my_vel);
 	
