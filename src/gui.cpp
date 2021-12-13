@@ -64,6 +64,16 @@ int main (int argc, char **argv)
 					ROS_INFO("Error, the bot is not moving.");
 				}
 				break;
+			case 't':
+				vel.request.toggle_helper= 1;
+				vel.request.command = 0;
+				change_speed.call(vel);
+				if(vel.response.resp){
+					ROS_INFO("Helper deactivated!");
+				}else{
+					ROS_INFO("Helper activated");
+				}
+				break;
 				
 			case 'x':
 				return 0;

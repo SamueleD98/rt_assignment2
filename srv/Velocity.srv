@@ -1,5 +1,6 @@
 int8 acc=1
 int8 dec=-1
 int8 command
+bool toggle_helper
 ---
 bool resp

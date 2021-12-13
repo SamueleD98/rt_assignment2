@@ -7,6 +7,7 @@
 ros::Publisher pub;
 
 float	vel_linear_x = 0.0;
+bool 	helper_status = 0;
 
 void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 	{
@@ -67,10 +68,16 @@ bool velocityCallback (rt_assignment2::Velocity::Request &req, rt_assignment2::V
 		if (vel_linear_x >= 2.0) res.resp = false;		
 	}else if (req.command == req.dec && vel_linear_x >= 0.5) {
 		vel_linear_x = vel_linear_x - 0.5;
-	}else{
+	}else if (req.toggle_helper == 1){
+		//toggle
+		helper_status = !helper_status;
+		if (helper_status) res.resp = false;
+	}else {
 		res.resp = false;
 	}
 	
+	
+	// se helper attivo allora devo controllare la velocità in base agli ostacoli
 	my_vel.linear.x = vel_linear_x;
 	pub.publish(my_vel);
 	
