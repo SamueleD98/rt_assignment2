@@ -9,7 +9,7 @@ The repository has a launch file that will run, in order:
 -the robot controller node  
 -the robot gui node  
   
-rosrun stage_ros stageros $(rospack find second_assignment)/world/my_world.world  
+rosrun stage_ros stageros $(rospack find rt_assignment2)/world/my_world.world  
   
   
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!CODICE LANCIO!!!!!!!!!!!!!!!!!!!!!!!!!!
