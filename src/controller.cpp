@@ -2,7 +2,7 @@
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 #include <math.h>   
-#include "rt_assignment2/Velocity.h"
+#include "rt_assignment2/Command.h"
 
 ros::Publisher pub;
 ros::Subscriber sub;
@@ -81,28 +81,30 @@ void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 		pub.publish(my_vel);
         }
   
-bool velocityCallback(rt_assignment2::Velocity::Request &req, rt_assignment2::Velocity::Response &res)
+bool commandCallback(rt_assignment2::Command::Request &req, rt_assignment2::Command::Response &res)
 	{
 
 		geometry_msgs::Twist my_vel;	
 		
-		res.resp = true;	  
-		
-		if (req.command == req.acc) {
-			vel_linear_x = vel_linear_x + 0.5;
-			if (vel_linear_x >= 2.0) res.resp = false;				
-		}else if (req.command == req.dec && vel_linear_x >= 0.5) {
-			vel_linear_x = vel_linear_x - 0.5;
-		}else if (req.toggle_helper == 1){
-			//toggle
-			helper_status = !helper_status;
-			if (!helper_status) res.resp = false;
-		}else {
-			res.resp = false;
+		switch (req.command)  
+		{		
+			case 1:
+				vel_linear_x = vel_linear_x - 0.5;
+				break;
+			
+			case 2:
+				vel_linear_x = vel_linear_x + 0.5;	
+				break;		
+			
+			case 3:
+				helper_status = !helper_status;
+				break;
 		}
 		
+		res.helper_status = helper_status;
 		my_vel.linear.x = vel_linear_x;
 		res.new_vel = vel_linear_x;
+		
 		pub.publish(my_vel);
 		return true;
 	}  
@@ -115,9 +117,9 @@ int main (int argc, char **argv)
 	pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);				//To change the velocity
 	sub = nh.subscribe("/base_scan", 1,botCallback);		//To see the obstacles
 	
-	ros::ServiceServer velocity= nh.advertiseService("/velocity", velocityCallback);	//To know when to change speed
+	ros::ServiceServer command= nh.advertiseService("/command", commandCallback);	//To know when to change speed
 	
-	ROS_INFO("Executing...\n");
+	//ROS_INFO("Executing...\n");
 	
 	ros::spin();
 	return 0;
