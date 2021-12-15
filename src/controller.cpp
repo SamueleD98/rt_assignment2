@@ -5,6 +5,7 @@
 #include "rt_assignment2/Velocity.h"
 
 ros::Publisher pub;
+ros::Subscriber sub;
 
 float	vel_linear_x = 0.0;
 bool 	helper_status = 0;
@@ -74,37 +75,37 @@ void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
 		//		my_vel.angular.z = - diff2 / std::abs(diff2) * 100;				
 		//	}					
 		
-		ROS_INFO("Speed, linear and angular: [%.1f, %.1f]",
-		my_vel.linear.x, my_vel.angular.z); 
+		
 		
 		
 		pub.publish(my_vel);
         }
   
-bool velocityCallback (rt_assignment2::Velocity::Request &req, rt_assignment2::Velocity::Response &res){
+bool velocityCallback(rt_assignment2::Velocity::Request &req, rt_assignment2::Velocity::Response &res)
+	{
 
-	geometry_msgs::Twist my_vel;	
-	
-	res.resp = true;	  
-	
-	if (req.command == req.acc) {
-		vel_linear_x = vel_linear_x + 0.5;
-		if (vel_linear_x >= 2.0) res.resp = false;		
-	}else if (req.command == req.dec && vel_linear_x >= 0.5) {
-		vel_linear_x = vel_linear_x - 0.5;
-	}else if (req.toggle_helper == 1){
-		//toggle
-		helper_status = !helper_status;
-		if (!helper_status) res.resp = false;
-	}else {
-		res.resp = false;
-	}
-	
-	my_vel.linear.x = vel_linear_x;
-	pub.publish(my_vel);
-	
-	return true;
-}  
+		geometry_msgs::Twist my_vel;	
+		
+		res.resp = true;	  
+		
+		if (req.command == req.acc) {
+			vel_linear_x = vel_linear_x + 0.5;
+			if (vel_linear_x >= 2.0) res.resp = false;				
+		}else if (req.command == req.dec && vel_linear_x >= 0.5) {
+			vel_linear_x = vel_linear_x - 0.5;
+		}else if (req.toggle_helper == 1){
+			//toggle
+			helper_status = !helper_status;
+			if (!helper_status) res.resp = false;
+		}else {
+			res.resp = false;
+		}
+		
+		my_vel.linear.x = vel_linear_x;
+		res.new_vel = vel_linear_x;
+		pub.publish(my_vel);
+		return true;
+	}  
 
 int main (int argc, char **argv)
 {
@@ -112,7 +113,7 @@ int main (int argc, char **argv)
 	ros::NodeHandle nh;
 	
 	pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);				//To change the velocity
-	ros::Subscriber sub = nh.subscribe("/base_scan", 1,botCallback);		//To see the obstacles
+	sub = nh.subscribe("/base_scan", 1,botCallback);		//To see the obstacles
 	
 	ros::ServiceServer velocity= nh.advertiseService("/velocity", velocityCallback);	//To know when to change speed
 	

@@ -20,7 +20,7 @@ int main (int argc, char **argv)
 	// Declaring the argument of the change speed call
 	rt_assignment2::Velocity vel;
 	
-	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	't' to toggle the helper,\n	'x' to kill the gui node.\n");
+	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	't' to toggle the helper,\n	'x' to kill the gui node and so the simulation.\n");
 	
 	//Declaring the input string
 	char inputString1;
@@ -45,11 +45,9 @@ int main (int argc, char **argv)
 				// Calling the service
 				change_speed.call(vel);
 				// Analyzing the response
-				if(vel.response.resp){
-					ROS_INFO("Speed increased!");
-				}else{
-					ROS_INFO("Speed increased!\n	Warning, speed too high.");
-				}
+				ROS_INFO("Speed increased to: %.1f",
+					vel.response.new_vel); 
+				if(!vel.response.resp)		ROS_INFO("Warning, speed too high.");					
 				break;
 				
 			case 's':
@@ -59,7 +57,8 @@ int main (int argc, char **argv)
 				change_speed.call(vel);
 				// Analyzing the response
 				if(vel.response.resp){
-					ROS_INFO("Speed decreased!");
+					ROS_INFO("Speed decreased to: %.1f",
+					vel.response.new_vel); 
 				}else{
 					ROS_INFO("Error, the bot is not moving.");
 				}
@@ -71,11 +70,12 @@ int main (int argc, char **argv)
 				if(vel.response.resp){
 					ROS_INFO("Helper activated!");
 				}else{
-					ROS_INFO("Helper deactivated");
+					ROS_INFO("Helper deactivated!");
 				}
 				break;
 				
 			case 'x':
+				ROS_INFO("Goodbye!");
 				return 0;
 				
 			default:
