@@ -20,7 +20,7 @@ int main (int argc, char **argv)
 	// Declaring the argument of the change speed call
 	rt_assignment2::Command vel;
 	
-	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	't' to toggle the helper,\n	'x' to kill the gui node and so the simulation.\n");
+	ROS_INFO("\n\n\nWelcome, please type:\n	' r ' to reset the position,\n	' w ' to increase the speed,\n	' s ' to decrease the speed,\n	' t ' to toggle the helper,\n	' x ' to kill the gui node and so the simulation.\n");
 	
 	//Declaring the input string
 	char inputString1;
