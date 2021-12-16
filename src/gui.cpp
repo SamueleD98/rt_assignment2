@@ -15,9 +15,9 @@ int main (int argc, char **argv)
 	// Declaring the argument of the reset call. The type is given by "rosservice info /reset_positions"
 	std_srvs::Empty rst;		
 	
-	// Setup the service client for the increase and decrease of the robot speed
+	// Setup the service client for the transmission of commands to the controller
 	ros::ServiceClient new_command = nh.serviceClient<rt_assignment2::Command>("/command");
-	// Declaring the argument of the change speed call
+	// Declaring the argument of the command call
 	rt_assignment2::Command cmd;
 	
 	ROS_INFO("\n\n\nWelcome, please type:\n	' r ' to reset the position,\n	' w ' to increase the speed,\n	' s ' to decrease the speed,\n	' t ' to toggle the helper,\n	' x ' to kill the gui node and so the simulation.\n\n");
