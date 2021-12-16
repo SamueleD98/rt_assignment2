@@ -1,52 +1,59 @@
 # Python Robotics Simulator
 This is a simple robot simulator that implements two ROS nodes to control a robot in the given environment.
-The gui node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. The robot will change its direction autonomously, avoiding to collide with the wall while the speed is low enough.  
+The robot will change its direction autonomously, avoiding to collide with the wall (at least until the speed is low enough). The gui node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. Furthermore the user can engage the *helper* which will also modify the linear velocity when approaching a curve.
 
 ## Running
 The repository has a launch file that will run, in order:  
--the ros master  
--the world representation  
--the robot controller node  
--the robot gui node  
-  
-rosrun stage_ros stageros $(rospack find rt_assignment2)/world/my_world.world  
-  
-  
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!CODICE LANCIO!!!!!!!!!!!!!!!!!!!!!!!!!!
+- the world representation;  
+- the robot controller node;
+- the robot interface node.
+
+The ros master node will be automatically called when launching the file. To launch use `roslaunch rt_assignment2 launcher.launch`
 
 ## Robot behaviour 
-The robot moves always in the same direction 
+The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretisize* into 5 subsections. Each one of them will be represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot. The controller node will adjust the trajectory proportionally to the difference between opposite subsections. 
 
-The robot sensors, actually, can detect boxes around all directions but, without limiting the fields of view, the robot will keep reaching (or avoiding) the same silver (golden) box as it is the closest to the robot.
-
-
-The code implements the following algorithm:  !!!!!!!!!!!!!!
+## User Interface node
+The UI node takes care of the user inputs for the control of the robot. It will accept 4 kind of different input, as shown in the image.  
+The code implements the following algorithm:  
 <pre>
 <b>while</b> the program is running
-	retrieve the position of the closest golden box   
-	<b>if</b> its distance is less than an arbitrary one  
-		stop the robot  
-		<b>if</b> the robot has been trying to avoid obstacles for 10 timesteps/turns   
-			move the robot backward a little   
-		<b>else</b>  
-			search for the best direction to turn into  
-			turn  
-	<b>else</b>  
- 		retrieve the position of the closest silver box  
-		<b>if</b> its distance is less than an arbitrary one  
-			stop the robot  
-			grab the silver box  
-			<b>if</b> the action was succesful  
-				turn by 180° degrees  
-				release the silver box  
-				turn by 180° degrees   
-			<b>else</b>   
-				adjust the trajectory according to the angle of the silver box with respect to the robot direction  
-		<b>else</b> <b>if</b> the silver box is in sight  
-			set a slower speed  
-			adjust the trajectory according to the angle of the silver box with respect to the robot direction  
-		<b>else</b>   
-			set cruising speed
+	input user choice
+	<b>switch</b> user choice
+		<b>case</b> 'r'
+			call the reset service
+			<b>break</b>
+		<b>case</b> 's'
+			<b>if</b> linear velocity == 0
+				print "Error, the robot is not moving"
+			<b>else</b> 
+				set the command to decrease the speed
+				call the service with the command
+				update the linear velocity 
+				print the new velocity
+				<b>if</b> the speed is greater than the dangerous one
+					print a warning
+			<b>break</b>
+		<b>case</b> 'w'
+			set the command to increase the speed
+			call the service with the command
+			update the linear velocity 
+			print the new velocity
+			<b>if</b> the speed is greater than the dangerous one
+				print a warning
+			<b>break</b>
+		<b>case</b> 't'
+			set the command to toggle the helper
+			call the service with the command
+			<b>if</b> the helper is active
+				print "Helper activated"
+			<b>else</b>
+				print "Helper deactivated"
+			<b>break</b>
+		<b>default</b>
+			print "Wrong character, please type again."
+			
+	ignore other chars in the same line
 </pre>
 
 ## Further improvement
