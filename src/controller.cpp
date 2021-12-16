@@ -2,8 +2,9 @@
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/LaserScan.h"
 #include <math.h>   
-#include "rt_assignment2/Command.h"
 #include <algorithm>    // std::min
+#include "rt_assignment2/Command.h"
+
 
 //Variables Declaration 
 ros::Publisher pub;
@@ -44,19 +45,18 @@ int main (int argc, char **argv)
 
 void take_action(float * m)
 	{
-		float diff1 = *(m+1) - *(m+3);
-		float diff2 = *(m+0) - *(m+4);
+		float diff = *(m+1) - *(m+3);
 		
-		if (-0.3 < diff1 < 0.3) 
+		
+		if (-0.3 < diff < 0.3) 
 		{	
-			if (-0.3 < diff2 < 0.3)
+			diff = *(m+0) - *(m+4);
+			if (-0.3 < diff < 0.3)
 			{
 				my_vel.linear.x = 0.1;
 				my_vel.angular.z = 100;		
 				pub.publish(my_vel);	
 				return;
-			}else{
-				diff1 = diff2;
 			}
 		}
 		
@@ -65,19 +65,19 @@ void take_action(float * m)
 		if (*(m+2) < 1.2)
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 0.5;
-			my_vel.angular.z = - diff1 * 100 / std::abs(diff1);
+			my_vel.angular.z = - diff * 100 / std::abs(diff);
 		
 		}else if (*(m+2) < 1.6)
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.0;
-			my_vel.angular.z = - diff1 * 75 / std::abs(diff1);
+			my_vel.angular.z = - diff * 75 / std::abs(diff);
 		
 		}else if (*(m+2) < 2.0) 
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.5;
-			my_vel.angular.z = - diff1 * 50 / std::abs(diff1);
+			my_vel.angular.z = - diff * 50 / std::abs(diff);
 		}else{
-			my_vel.angular.z = - diff1 / std::abs(diff1);
+			my_vel.angular.z = - diff / std::abs(diff);
 		} 	
 				
 		pub.publish(my_vel);	

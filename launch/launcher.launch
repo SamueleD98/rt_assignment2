@@ -3,9 +3,9 @@
 
 	<node pkg="stage_ros" name="stageros" type="stageros" args="$(find rt_assignment2)/world/my_world.world" respawn="true"/>	
 	
-	<node pkg="rt_assignment2" name="bot_controller" type="controller_node1" output="screen" respawn="true"/> 
+	<node pkg="rt_assignment2" name="bot_controller" type="bot_controller_node" respawn="true"/> 
 	
-	<node pkg="rt_assignment2" name="user_interface" type="gui_node" output="screen" required="true"/> 
+	<node pkg="rt_assignment2" name="bot_user_interface" type="bot_ui_node" output="screen" required="true"/> 
 	
 </launch>
 
