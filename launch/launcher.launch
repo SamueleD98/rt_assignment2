@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 
-	<node pkg="stage_ros" name="stageros" type="stageros" args="$(find rt_assignment2)/world/my_world.world" respawn="true"/>	
+	<node pkg="stage_ros" name="stageros" type="stageros" args="$(find rt_assignment2)/world/my_world.world" respawn="true"/>	 
 	
 	<node pkg="rt_assignment2" name="bot_controller" type="bot_controller_node" respawn="true"/> 
 	
