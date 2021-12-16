@@ -62,11 +62,26 @@ The code implements the following algorithm:
 This is the node the actually modifies the robot velocity, both the linear and the angular one, with the instructions given by the user. It behaves as a server for the *command* service, as a subscriber of the *base_scan* topic and as a publisher of the *cmd_vel* topic.  
 Each time something is published on the *base_scan* topic, the laserCallback function is executed:
 <pre>
-	call the *discretize field of view* function
-	call the *take action* function
+call the *discretize field of view* function
+call the *take action* function
 </pre>
-The *discretize_fov* function takes as arguments the msg pubblished on the topic, the pointer to a vector and an integer. The latter is the number of subsections in which the ranges vector will be divided. The bigger this number is, the smaller the central subsection will be. 
+The *discretize_fov* function takes as arguments the msg pubblished on the *base_scan* topic, the pointer to an array and an integer. The latter is the number of subsections in which the ranges vector will be divided. The function discretize the ranges vector in the given number of subsections and then it will unify the adjacent sectors. In the end there will be only five sectors as shown in the image:
 ![Robot_field_of_view](/images/robot_view.png)  
+An increasing number of subsections reduce the width of the central one and so the robot won't change its direction for an obstacle which is not really on its trajectory. This has been proved to result in a less fragmented trajectory. 
+Algorithm:
+<pre>
+	compute the sector angle as PI rad on the given number of sectors
+	compute the number of values per sector as the rounding of the sector angle on the increment angle 
+	<b>for</b> each one of the sectors
+		set the min to 10
+		<b>for</b> each one of the values in that sector
+			<b>if</b> the value is less than the min
+				set the min to that value
+	compute the number of adjacent sectors that will be unified as the total number of sectors minus one, all divided by 4
+	<b>for</b> each one of the final five sections
+		compute the min distance as the min value between the n adjacent sectors			
+</pre>
+
 
 
 ## Further improvement
