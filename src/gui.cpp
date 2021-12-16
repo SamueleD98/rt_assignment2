@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "std_srvs/Empty.h"
-#include "rt_assignment2/Velocity.h"
+#include "rt_assignment2/Command.h"
 
 
 int main (int argc, char **argv)
@@ -16,14 +16,16 @@ int main (int argc, char **argv)
 	std_srvs::Empty rst;		
 	
 	// Setup the service client for the increase and decrease of the robot speed
-	ros::ServiceClient change_speed = nh.serviceClient<rt_assignment2::Velocity>("/velocity");
+	ros::ServiceClient change_speed = nh.serviceClient<rt_assignment2::Command>("/command");
 	// Declaring the argument of the change speed call
-	rt_assignment2::Velocity vel;
+	rt_assignment2::Command vel;
 	
-	ROS_INFO("\n\n\nWelcome, please type:\n	'r' to reset the position,\n	'w' to increase the speed,\n	's' to decrease the speed,\n	'x' to kill the gui node.\n");
+	ROS_INFO("\n\n\nWelcome, please type:\n	' r ' to reset the position,\n	' w ' to increase the speed,\n	' s ' to decrease the speed,\n	' t ' to toggle the helper,\n	' x ' to kill the gui node and so the simulation.\n");
 	
 	//Declaring the input string
 	char inputString1;
+	
+	float linear_vel = 0;
 	
 	// The node needs to be ready to receive input until the node is running	
 	while (ros::ok()) 
@@ -39,33 +41,54 @@ int main (int argc, char **argv)
 				ROS_INFO("Position resetted!");			
 				break;
 				
-			case 'w':
-				// Setting the command to increase the speed
-				vel.request.command = 1;
-				// Calling the service
-				change_speed.call(vel);
-				// Analyzing the response
-				if(vel.response.resp){
-					ROS_INFO("Speed increased!");
+			case 's':
+				if (linear_vel == 0.0)
+				{
+					ROS_INFO("Error, the bot is not moving.");
+					
 				}else{
-					ROS_INFO("Warning, speed too high.");
+					// Setting the command to decrease the speed
+					vel.request.command = 1;
+					// Calling the service
+					change_speed.call(vel);
+					linear_vel = vel.response.new_vel;
+					
+					ROS_INFO("Speed decreased to: %.1f",
+						linear_vel); 
+					if(linear_vel >= 2.0)
+					{
+						ROS_INFO("Warning, speed too high.");	
+					}
 				}
 				break;
 				
-			case 's':
+			case 'w':
 				// Setting the command to increase the speed
-				vel.request.command = -1;
+				vel.request.command = 2;
 				// Calling the service
 				change_speed.call(vel);
-				// Analyzing the response
-				if(vel.response.resp){
-					ROS_INFO("Speed decreased!");
+				linear_vel = vel.response.new_vel;
+					
+				ROS_INFO("Speed increased to: %.1f",
+					linear_vel); 
+				if(linear_vel >= 2.0)
+				{
+					ROS_INFO("Warning, speed too high.");	
+				}			
+				break;
+				
+			case 't':
+				vel.request.command = 3;
+				change_speed.call(vel);
+				if(vel.response.helper_status){
+					ROS_INFO("Helper activated!");
 				}else{
-					ROS_INFO("Error, the bot is not moving.");
+					ROS_INFO("Helper deactivated!");
 				}
 				break;
 				
 			case 'x':
+				ROS_INFO("Goodbye!");
 				return 0;
 				
 			default:
