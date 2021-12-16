@@ -15,6 +15,8 @@ The robot sensors can detect the obstacles around all directions but, in order t
 
 ## User Interface node
 The UI node takes care of the user inputs for the control of the robot. It will accept 4 kind of different input, as shown in the image.  
+!!!!!!!!!!!!!!!!!!!!!!!  
+
 The code implements the following algorithm:  
 <pre>
 <b>while</b> the program is running
@@ -55,6 +57,17 @@ The code implements the following algorithm:
 			
 	ignore other chars in the same line
 </pre>
+
+## Controller node
+This is the node the actually modifies the robot velocity, both the linear and the angular one, with the instructions given by the user. It behaves as a server for the *command* service, as a subscriber of the *base_scan* topic and as a publisher of the *cmd_vel* topic.  
+Each time something is published on the *base_scan* topic, the laserCallback function is executed:
+<pre>
+	call the *discretize field of view* function
+	call the *take action* function
+</pre>
+The *discretize_fov* function takes as arguments the msg pubblished on the topic, the pointer to a vector and an integer. The latter is the number of subsections in which the ranges vector will be divided. The bigger this number is, the smaller the central subsection will be. 
+![Robot_field_of_view](/images/robot_view.png)  
+
 
 ## Further improvement
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
