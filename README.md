@@ -14,8 +14,9 @@ The ros master node will be automatically called when launching the file. To lau
 The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretisize* into 5 subsections. Each one of them will be represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot. The controller node will adjust the trajectory proportionally to the difference between opposite subsections. 
 
 ## User Interface node
-The UI node takes care of the user inputs for the control of the robot. It will accept 4 kind of different input, as shown in the image.  
-!!!!!!!!!!!!!!!!!!!!!!!  
+The UI node takes care of the user inputs for the control of the robot. It offers five options, as shown in the image:  
+
+![user_interface](/images/roslaunch.png)
 
 The code implements the following algorithm:  
 <pre>
@@ -125,7 +126,3 @@ set the answer to the service call with the helper status and the linear velocit
 publish the new velocity
 </pre>
 
-
-
-## Further improvement
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
