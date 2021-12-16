@@ -67,19 +67,62 @@ call the *take action* function
 </pre>
 The *discretize_fov* function takes as arguments the msg pubblished on the *base_scan* topic, the pointer to an array and an integer. The latter is the number of subsections in which the ranges vector will be divided. The function discretize the ranges vector in the given number of subsections and then it will unify the adjacent sectors. In the end there will be only five sectors as shown in the image:
 ![Robot_field_of_view](/images/robot_view.png)  
-An increasing number of subsections reduce the width of the central one and so the robot won't change its direction for an obstacle which is not really on its trajectory. This has been proved to result in a less fragmented trajectory. 
+An increasing number of subsections reduce the width of the central one and so the robot won't change its direction for an obstacle which is not really on its trajectory. This has been proved to result in a less fragmented trajectory.   
 Algorithm:
 <pre>
-	compute the sector angle as PI rad on the given number of sectors
-	compute the number of values per sector as the rounding of the sector angle on the increment angle 
-	<b>for</b> each one of the sectors
-		set the min to 10
-		<b>for</b> each one of the values in that sector
-			<b>if</b> the value is less than the min
-				set the min to that value
-	compute the number of adjacent sectors that will be unified as the total number of sectors minus one, all divided by 4
-	<b>for</b> each one of the final five sections
-		compute the min distance as the min value between the n adjacent sectors			
+compute the sector angle as PI radiants on the given number of sectors
+compute the number of values per sector as the rounding of the sector angle on the increment angle 
+<b>for</b> each one of the sectors
+	set the min to 10
+	<b>for</b> each one of the values in that sector
+		<b>if</b> the value is less than the min
+			set the min to that value
+compute the number of adjacent sectors that will be unified as the total number of sectors minus one, all divided by 4
+<b>for</b> each one of the final five sections
+	compute the min distance as the min value between the n adjacent sectors			
+</pre>
+As soon as the *min* vector is updated, the *take action* function is called:
+<pre>
+compute *diff* as the difference between the second and the fourth sector	
+<b>if</b> the value is inferior to a tollerance range
+	compute *diff* as the difference between the first and the fifth sector
+	<b>if</b> the value is inferior to a tollerance range
+		set the linear velocity to 0.1
+		set the angular velocity to 100
+		publish the new velocity
+		return
+set the velocity to the old value
+<b>if</b> the value of the third sector (the central one) is less than 1.2
+	<b>if</b> the helper is active and the linear velocity is greater than the dangerous one
+		set the linear velocity to 0.5
+	set the angular velocity as minus the fraction of *diff* on its absolute, multiplied by 100
+<b>else</b> <b>if</b> the value of the third sector (the central one) is less than 1.6
+	<b>if</b> the helper is active and the linear velocity is greater than the dangerous one
+		set the linear velocity to 1.0
+	set the angular velocity as minus the fraction of *diff* on its absolute, multiplied by 75
+<b>else</b> <b>if</b> the value of the third sector (the central one) is less than 2.0
+	<b>if</b> the helper is active and the linear velocity is greater than the dangerous one
+		set the linear velocity to 1.5
+	set the angular velocity as minus the fraction of *diff* on its absolute, multiplied by 50
+<b>else</b>
+	set the angular velocity as minus the fraction of *diff* on its absolute
+publish the new velocity
+</pre>  
+
+Ultimately, the *commandCallback function*:  
+<pre>
+<b>switch</b> the given command
+	<b>case</b> 1
+		set the linear velocity as the old one minus 0.5
+		<b>break</b>
+	<b>case</b> 2
+		set the linear velocity as the old one plus 0.5
+		<b>break</b>
+	<b>case</b> 3
+		set the helper status as the negation of itself
+		<b>break</b>
+set the answer to the service call with the helper status and the linear velocity
+publish the new velocity
 </pre>
 
 
