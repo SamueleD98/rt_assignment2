@@ -11,14 +11,18 @@ ros::Subscriber sub;
 geometry_msgs::Twist my_vel;
 float	vel_linear_x = 0.0;
 bool 	helper_status = false;
+//Dividing the ostacles in sectors
+int number_of_sectors = 13;
 
 
 //Functions declaration (the definition after the main)
 
+void laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
+
 //Function to discretize the Field Of View. More info in the ReadMe.
 void discretize_fov(const sensor_msgs::LaserScan::ConstPtr& msg, float * m, int number_of_sectors);	
 
-void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg);
+void take_action(float * m);
 
 bool commandCallback(rt_assignment2::Command::Request &req, rt_assignment2::Command::Response &res);
 
@@ -28,9 +32,9 @@ int main (int argc, char **argv)
 	ros::NodeHandle nh;
 	
 	pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",1);				//To change the velocity
-	sub = nh.subscribe("/base_scan", 1,botCallback);		//To see the obstacles
+	sub = nh.subscribe("/base_scan", 1, laserCallback);		//To see the obstacles
 	
-	ros::ServiceServer command= nh.advertiseService("/command", commandCallback);	//To know when to change speed
+	ros::ServiceServer command = nh.advertiseService("/command", commandCallback);	//To know when to change speed
 	
 	//ROS_INFO("Executing...\n");
 	
@@ -38,28 +42,55 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-void botCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+void take_action(float * m)
 	{
-		//Dividing the ostacles in sectors
-		int number_of_sectors = 9;
+		float diff1 = *(m+1) - *(m+3);
+		float diff2 = *(m+0) - *(m+4);
 		
-		float min[5] = {10, 10, 10, 10, 10};
+		if (-0.3 < diff1 < 0.3) 
+		{	
+			if (-0.3 < diff2 < 0.3)
+			{
+				my_vel.linear.x = 0.1;
+				my_vel.angular.z = 100;		
+				pub.publish(my_vel);	
+				return;
+			}else{
+				diff1 = diff2;
+			}
+		}
 		
+		my_vel.linear.x = vel_linear_x;	
+		
+		if (*(m+2) < 1.2)
+		{
+			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 0.5;
+			my_vel.angular.z = - diff1 * 100 / std::abs(diff1);
+		
+		}else if (*(m+2) < 1.6)
+		{
+			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.0;
+			my_vel.angular.z = - diff1 * 75 / std::abs(diff1);
+		
+		}else if (*(m+2) < 2.0) 
+		{
+			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.5;
+			my_vel.angular.z = - diff1 * 50 / std::abs(diff1);
+		}else{
+			my_vel.angular.z = - diff1 / std::abs(diff1);
+		} 	
+				
+		pub.publish(my_vel);	
+	}
+
+void laserCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+	{		
+		float min[5] = {10, 10, 10, 10, 10};		
 		float * m = min;
 		
 		discretize_fov(msg, m, number_of_sectors);
 		
-		float diff1 = min[1] - min[3];
-		float diff2 = min[0] - min[4];
-		
-		my_vel.linear.x = vel_linear_x;	
-		my_vel.angular.z = - diff1 / std::abs(diff1) * 100;
-		
-		if (helper_status && min[2] < 2.0 && vel_linear_x >= 2.0) {
-			my_vel.linear.x = 1.5;
-		} 		
-		
-		pub.publish(my_vel);
+		take_action(m);		
         }
 
 bool commandCallback(rt_assignment2::Command::Request &req, rt_assignment2::Command::Response &res)
