@@ -7,7 +7,7 @@
 int main (int argc, char **argv)
 {
 	// Initialize the node, setup the NodeHandle for handling the communication with the ROS system  
-	ros::init(argc, argv, "bot_gui");  
+	ros::init(argc, argv, "bot_ui");  
 	ros::NodeHandle nh;
 		
 	// Setup the service client for the resetting of the robot position	
@@ -24,7 +24,7 @@ int main (int argc, char **argv)
 	ROS_INFO("Remember the speed is now 0.0 and the helper is not active\n");
 	
 	//Declaring the input string
-	char inputString1;
+	char inputString;
 	
 	float linear_vel = 0;
 	
@@ -32,9 +32,9 @@ int main (int argc, char **argv)
 	while (ros::ok()) 
 	{		
 		//Writing the input string
-		std::cin >> inputString1;		
+		std::cin >> inputString;		
 		
-		switch (inputString1) {
+		switch (inputString) {
 			case 'r':
 				// Calling the service
 				reset.call(rst);
