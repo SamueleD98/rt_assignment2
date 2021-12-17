@@ -1,5 +1,5 @@
 # Python Robotics Simulator
-This is a simple robot simulator that implements two ROS nodes to control a robot in the given environment.
+This is a software architecture in ROS that implements two nodes to control a robot in the given environment.
 The robot will change its direction autonomously, avoiding to collide with the wall (at least until the speed is low enough). The gui node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. Furthermore the user can engage the *helper* which will also modify the linear velocity when approaching a curve.
 
 ## Running
