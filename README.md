@@ -42,6 +42,10 @@ If even these distances are similar, it will reduce the velocity almost to zero 
 
 The angular velocity at which the robot turns depends on the distance of the closest obstacle in the third subsection.
 
+### Helper function
+descrizione  
+
+
 ## User Interface node
 The UI node takes care of the user inputs for the control of the robot. It offers five options, as shown in the image:  
 
