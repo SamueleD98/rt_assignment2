@@ -8,7 +8,7 @@ The repository has a launch file that will run, in order:
 - the robot controller node;
 - the robot interface node.
 
-The ROS Master node will be automatically called when launching the file. To launch use `roslaunch rt_assignment2 launcher.launch`
+The ROS Master node will be automatically called when launching the file. To launch use `roslaunch rt_assignment2 simulation.launch`
 
 ## Robot behaviour 
 The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretized* into 5 subsections. Each one of them will be represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot. The controller node will adjust the trajectory proportionally to the difference between opposite subsections. 
