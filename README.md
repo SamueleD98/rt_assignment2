@@ -34,13 +34,9 @@ To launch use `roslaunch rt_assignment2 simulation.launch`
 
 ## Robot behaviour 
 The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretized* into 5 subsections. Each one of them is represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot, the one that could be hit if the trajectory doesn't change.  
-The controller node checks the distances of the objects in the second and fourth subsections and turns the robot in the direction with the furthest obstacle:  
+The controller node checks the distances of the objects in the second and fourth subsections and turns the robot in the direction with the furthest obstacle (left image). If the the distances in the said subsections are similar, the controller will checks the distances in the first and fifth subsections to decide where to turn (right image).
 
-![robot_view1](/images/robot_view1.png)  
-
-If the the distances in the said subsections are similar, the controller will checks the distances in the first and fifth subsections to decide where to turn:
-
-![robot_view2](/images/robot_view2.png)  
+![robot_view_obst](/images/robot_view_obst.png)  
 
 If even these distances are similar, it will reduce the velocity almost to zero and turn anti-clockwise.  
 
