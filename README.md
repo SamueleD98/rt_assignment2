@@ -2,13 +2,34 @@
 This is a software architecture in ROS that implements two nodes to control a robot in the given environment.  
 The robot will change its direction autonomously, avoiding colliding with the wall (at least until the speed is low enough). The user interface node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. Furthermore, the user can engage the helper which will also modify the linear velocity when approaching a curve.
 
+## Pre-development phase  
+
+To control the robot in the given environment it's necessary to know its surroundings and how to change its parameters.  
+Once the simulation environment is runned using `rosrun stage_ros stageros $(rospack find rt_assignment2)/world/my_world.world`, the `rostopic list` command will list every active topic. The informations about the necessary topics are given with the `rostopic info <topic name>`:  
+
+![topics](/images/topics.png)  
+
+In the *base_scan* topic, the *stageros* node will publish information about the surrounding environment, indeed it is signed as a Publisher.    
+The *stageros* is instead a Subscriber when it comes to the *cmd_vel* topic. In the latter it's published the velocity that the robot needs to have.    
+In the images above, it is also shown the type of the message for each topic. Typing `rosmsg show <type>`, the fields of the message, as their type, are shown:  
+
+![msg](/images/msg.png)  
+
+In the following an extract of a message published on the *base_scan* topic:  
+
+![base_scan](/images/base_scan.png)  
+
+*angle_min* and *angle_max* prove that the robot can see the obstacles in the [-PI/2, PI/2] range meanwhile the *angle_increment* value will be used to compute the number of values in that range. Ultimately, the *ranges* vector has the distances of the obstacles in the described range.  
+
+About the *geometry_msgs/Twist* type, it's now known how to write the message to change both the linear and the angular velocity. The software will focus only on the *x* value of the linear velocity and on the *z* value of the angular one, since it's assumed that the robot can't move transversally to the pointed direction and it can't roll on itself (*x* and *y* values of the angular velocity are always equal to zero).  
+
 ## Running
 The repository has a launch file that will run, in order:  
 - the world representation;  
 - the robot controller node;
 - the robot interface node.
 
-The ROS Master node will be automatically called when launching the file. To launch use `roslaunch rt_assignment2 launcher.launch`
+The ROS Master node will be automatically called when launching the file. To launch use `roslaunch rt_assignment2 simulation.launch`
 
 ## Robot behaviour 
 The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretized* into 5 subsections. Each one of them will be represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot. The controller node will adjust the trajectory proportionally to the difference between opposite subsections. 
@@ -127,4 +148,5 @@ publish the new velocity
 </pre>
 
 ## Future
-n sectors as parameter
+ - n sectors as parameter
+ - secure distance which changes with the speed
