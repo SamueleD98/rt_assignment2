@@ -1,7 +1,9 @@
 #include "ros/ros.h"
+#include <iostream>
+
 #include "geometry_msgs/Twist.h"
 #include "std_srvs/Empty.h"
-#include "rt_assignment2/Command.h"
+#include "rt_assignment2/Command.h" 
 
 
 int main (int argc, char **argv)

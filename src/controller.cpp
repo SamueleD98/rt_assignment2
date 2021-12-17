@@ -1,8 +1,10 @@
 #include "ros/ros.h"
-#include "geometry_msgs/Twist.h"
-#include "sensor_msgs/LaserScan.h"
+#include <iostream>
 #include <math.h>   
 #include <algorithm>    // std::min
+
+#include "geometry_msgs/Twist.h" 
+#include "sensor_msgs/LaserScan.h"
 #include "rt_assignment2/Command.h"
 
 
@@ -62,17 +64,17 @@ void take_action(float * m)
 		
 		my_vel.linear.x = vel_linear_x;	
 		
-		if (*(m+2) < 1.2)
+		if (*(m+2) < 1.5)
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 0.5;
 			my_vel.angular.z = - diff * 100 / std::abs(diff);
 		
-		}else if (*(m+2) < 1.6)
+		}else if (*(m+2) < 2.0)
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.0;
 			my_vel.angular.z = - diff * 75 / std::abs(diff);
 		
-		}else if (*(m+2) < 2.0) 
+		}else if (*(m+2) < 2.3) 
 		{
 			if (helper_status && vel_linear_x >= 2.0) my_vel.linear.x = 1.5;
 			my_vel.angular.z = - diff * 50 / std::abs(diff);
