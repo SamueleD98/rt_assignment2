@@ -5,16 +5,22 @@ The robot will change its direction autonomously, avoiding colliding with the wa
 ## Preparation phase
 To control the robot in the given environment it's necessary to know its surroundings and how to change its parameters.  
 Once the simulation environment is runned using `rosrun stage_ros stageros $(rospack find rt_assignment2)/world/my_world.world`, the `rostopic list` command will list every active topic. The informations about the necessary topics are given with the `rostopic info <topic name>`:  
+
 ![topics](/images/topics.png)  
+
 In the *base_scan* topic, the *stageros* node will publish information about the surrounding environment, indeed it is signed as a Publisher.    
 The *stageros* is instead a Subscriber when it comes to the *cmd_vel* topic. In the latter it's published the velocity that the robot needs to have.    
 In the images above, it is also shown the type of the message for each topic. Typing `rosmsg show <type>`, the fields of the message, as their type, are shown:  
+
 ![msg](/images/msg.png)  
+
 In the following an extract of a message published on the *base_scan* topic:  
+
 ![base_scan](/images/base_scan.png)  
+
 *angle_min* and *angle_max* prove that the robot can see the obstacles in the [-PI/2, PI/2] range meanwhile the *angle_increment* value will be used to compute the number of values in that range. Ultimately, the *ranges* vector has the distances of the obstacles in the described range.  
 
-About the *geometry_msgs/Twist* type, it's now known how to write the message to change both the linear and the angular velocity. The software will focus only on the *x* value of the linear velocity and on the *z* value of the angular one, since it's assumed that the robot can't move transversally to the pointing direction and it can't roll on itself (angular velocity on the *y* and *x* axes is equal to zero).
+About the *geometry_msgs/Twist* type, it's now known how to write the message to change both the linear and the angular velocity. The software will focus only on the *x* value of the linear velocity and on the *z* value of the angular one, since it's assumed that the robot can't move transversally to the pointed direction and it can't roll on itself (*x* and *y* values of the angular velocity are always equal to zero).
 
 
 ## Running
