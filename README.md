@@ -168,11 +168,11 @@ set the answer to the service call with the helper status and the target linear 
 </pre>
 
 ## Further improvement
-For the future, a possible improvement consist in the possibility to give the number of subsections in which to divide the ranges vector as parameter of the launch file, making so possible to study the different behaviors of the robot and so finding the best number for each application.  
+For the future, a possible improvement consist in the possibility to give the **number of subsections** in which to divide the ranges vector **as parameter** of the launch file, making so possible to study the different behaviors of the robot and so finding the best number for each application.  
 
-The distances, used to check how dangerous an obstacle is, should change accordingly to the speed the robot has.  
+The **distances**, used to check how dangerous an obstacle is, **should change accordingly to the speed** the robot has.  
 
-Even the *helper* could have a few more features, for example it could increase the robot speed as much as possible, to obtain the best performances in terms of lap times.
+Even the **helper** could have a few more features, for example it could **increase the robot speed** as much as possible, **to obtain the best performances** in terms of lap times for the given environment.
  
  
  
