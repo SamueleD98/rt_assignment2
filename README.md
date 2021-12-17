@@ -63,7 +63,7 @@ The code implements the following algorithm:
 			call the reset service
 			<b>break</b>
 		<b>case</b> 's'
-			<b>if</b> linear velocity == 0
+			<b>if</b> the linear velocity equals to 0
 				print "Error, the robot is not moving"
 			<b>else</b> 
 				set the command to decrease the speed
@@ -97,12 +97,12 @@ The code implements the following algorithm:
 
 ## Controller node
 This is the node the actually modifies the robot velocity, both the linear and the angular one, with the instructions given by the user. It behaves as a server for the *command* service, as a subscriber of the *base_scan* topic and as a publisher of the *cmd_vel* topic.  
-Each time something is published on the *base_scan* topic, the laserCallback function is executed:
+Each time something is published on the *base_scan* topic, the ***laserCallback*** function is executed:
 <pre>
 call the *discretize field of view* function
 call the *take action* function
 </pre>
-The *discretize_fov* function takes as arguments the msg published on the *base_scan* topic, the pointer to an array and an integer. The latter is the number of subsections in which the ranges vector will be divided. The function discretize the ranges vector in the given number of subsections, and then it will unify the adjacent sectors. In the end there will be only five sectors as shown in the image:  
+The ***discretize_fov*** function takes as arguments the msg published on the *base_scan* topic, the pointer to an array and an integer. The latter is the number of subsections in which the ranges vector will be divided. The function discretize the ranges vector in the given number of subsections, and then it will unify the adjacent sectors. In the end there will be only five sectors as shown in the image:  
 
 ![Robot_field_of_view](/images/robot_view.png)  
 
@@ -120,7 +120,7 @@ compute the number of adjacent sectors that will be unified as the total number 
 <b>for</b> each one of the final five sections
 	compute the min distance as the min value between the n adjacent sectors			
 </pre>
-As soon as the *min* vector is updated, the *take action* function is called:
+As soon as the *min* vector is updated, the ***take action*** function is called:
 <pre>
 compute *diff* as the difference between the second and the fourth sector	
 <b>if</b> the value is inferior to a tollerance range
@@ -152,7 +152,7 @@ publish the new velocity
 update the old velocity as the linear velocity
 </pre>  
 
-Ultimately, the *commandCallback function*:  
+Ultimately, the ***commandService*** function:  
 <pre>
 <b>switch</b> the given command
 	<b>case</b> 1
