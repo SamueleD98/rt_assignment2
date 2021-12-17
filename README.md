@@ -33,7 +33,18 @@ The ROS Master node will be automatically called when launching the file.
 To launch use `roslaunch rt_assignment2 simulation.launch`
 
 ## Robot behaviour 
-The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretized* into 5 subsections. Each one of them will be represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot. The controller node will adjust the trajectory proportionally to the difference between opposite subsections. 
+The robot sensors can detect the obstacles around all directions but, in order to understand the best direction to turn into, the field of view is *discretized* into 5 subsections. Each one of them is represented by the distance of the closest object in that direction. The third one will be the central one, and so it will be the distance of the object right in front of the robot, the one that could be hit if the trajectory doesn't change.  
+The controller node checks the distances of the objects in the second and fourth subsections and turns the robot in the direction with the furthest obstacle:  
+
+![robot_view1](/images/robot_view1.png)  
+
+If the the distances in the said subsections are similar, the controller will checks the distances in the first and fifth subsections to decide where to turn:
+
+![robot_view2](/images/robot_view2.png)  
+
+If even these distances are similar, it will reduce the velocity almost to zero and turn anti-clockwise.  
+
+The angular velocity at which the robot turns depends on the distance of the closest obstacle in the third subsection.
 
 ## User Interface node
 The UI node takes care of the user inputs for the control of the robot. It offers five options, as shown in the image:  
