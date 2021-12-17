@@ -23,6 +23,8 @@ In the following an extract of a message published on the *base_scan* topic:
 
 About the *geometry_msgs/Twist* type, it's now known how to write the message to change both the linear and the angular velocity. The software will focus only on the *x* value of the linear velocity and on the *z* value of the angular one, since it's assumed that the robot can't move transversally to the pointed direction and it can't roll on itself (*x* and *y* values of the angular velocity are always equal to zero).  
 
+To reset the position of the robot, a service is offered by the *stageros* node called *reset_positions*. It can be seen, with the command `rosservice info /reset_positions`, that takes a parameter of type *std_srvs/Empty*.
+
 ## Running
 The repository has a launch file that will run, in order:  
 - the world representation;  
