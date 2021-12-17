@@ -1,8 +1,10 @@
 #include "ros/ros.h"
-#include "geometry_msgs/Twist.h" 
-#include "sensor_msgs/LaserScan.h"
+#include <iostream>
 #include <math.h>   
 #include <algorithm>    // std::min
+
+#include "geometry_msgs/Twist.h" 
+#include "sensor_msgs/LaserScan.h"
 #include "rt_assignment2/Command.h"
 
 
