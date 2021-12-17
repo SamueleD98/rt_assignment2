@@ -39,12 +39,12 @@ The controller node checks the distances of the objects in the second and fourth
 ![robot_view_obst](/images/robot_view_obst.png)  
 
 If even these distances are similar, it will reduce the velocity almost to zero and turn anti-clockwise.  
-
 The angular velocity at which the robot turns depends on the distance of the closest obstacle in the third subsection.
 
-### Helper function
-descrizione  
+#### *Helper* function
 
+During the standard execution of the software, the linear velocity of the robot is assumed to be modifiable only by the user. The autonomous driving is so restricted just to the variation of the trajectory. While this system works just fine for low speeds, the collision rate grows for high speeds.  
+In order to increase the highest safe speed of the robot, has been developed a function. that can be engaged by the user. which reduce the linear velocity when approaching an obstacle. How much the speed is reduced depends, as it happens with the angular velocity, on the distance of the obstacle. This function can be turned on/off from the user interface.  
 
 ## User Interface node
 The UI node takes care of the user inputs for the control of the robot. It offers five options, as shown in the image:  
