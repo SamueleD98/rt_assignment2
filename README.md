@@ -2,6 +2,8 @@
 This is a software architecture in ROS that implements two nodes to control a robot in the given environment.  
 The robot will change its direction autonomously, avoiding colliding with the wall (at least until the speed is low enough). The user interface node will allow the user to increase or decrease the speed of the robot and to reset its position to the initial one. Furthermore, the user can engage the helper which will also modify the linear velocity when approaching a curve.
 
+## 
+
 ## Running
 The repository has a launch file that will run, in order:  
 - the world representation;  
@@ -127,4 +129,5 @@ publish the new velocity
 </pre>
 
 ## Future
-n sectors as parameter
+ - n sectors as parameter
+ - secure distance which changes with the speed
