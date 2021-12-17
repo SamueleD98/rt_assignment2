@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
 	<!--	Simulation environment	-->
-	<node pkg="stage_ros" name="stageros" type="stageros" args="$(find rt_assignment2)/world/my_world.world" respawn="true"/>
+	<node pkg="stage_ros" name="environment" type="stageros" args="$(find rt_assignment2)/world/my_world.world" respawn="true"/>
 	<!-- The respawn argument is set to true so that the node always executes as long as the user wants so -->
 	
 	<!--	Bot controller node	-->
