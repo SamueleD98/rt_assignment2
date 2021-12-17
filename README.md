@@ -126,3 +126,5 @@ set the answer to the service call with the helper status and the linear velocit
 publish the new velocity
 </pre>
 
+## Future
+n sectors as parameter
